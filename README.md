@@ -96,7 +96,7 @@ Artifacts saved → loaded at runtime by Streamlit app
 ## Quickstart
 
 ```bash
-git clone https://github.com/kerubobosire254/stock-price-prediction.git
+git clone https://github.com/kerubobosire254/stock-app-101.git
 cd stock-price-prediction
 pip install -r requirements.txt
 streamlit run app.py
