@@ -7,7 +7,8 @@
 
 ### Snippet of the App
 
-<img width="1355" height="586" alt="image" src="https://github.com/user-attachments/assets/1fa04558-ac28-4baf-aa8d-f2322d9058ef" />
+<img width="1358" height="570" alt="image" src="https://github.com/user-attachments/assets/8bf0b20d-5f72-4368-bab3-daf3f81af675" />
+
 
 
 ## The Problem — And Why It Matters
@@ -26,7 +27,7 @@ That gap — between what professional investors know and what everyone else has
 
 ## The Solution — What This App Does
 
-The **Netflix Price Intelligence Terminal** is a data-driven dashboard that takes years of Netflix stock price data and turns it into clear, visual insights — the kind that used to be locked behind expensive professional software.
+The **Stock Price Intelligence Terminal** is a data-driven dashboard that takes years of Netflix stock price data and turns it into clear, visual insights — the kind that used to be locked behind expensive professional software.
 
 You don't need to know what "MACD" means. You don't need to understand neural networks. The app does the heavy lifting and shows you what the numbers are actually saying.
 
@@ -168,7 +169,7 @@ If this project continued to grow, here's what would take it to the next level:
 
 ## About the Builder
 
-This app was built by **Kerubo Bosire**, an actuarial scientist transitioning into data science and machine learning. The goal was to build something that demonstrates real-world ML engineering skills — not just a textbook example, but a tool that solves a genuine problem with clean, professional output.
+This app was built by **Kerubo Bosire**, an actuarial scientist transitioning into AI Engineering and machine learning. The goal was to build something that demonstrates real-world ML engineering skills — not just a textbook example, but a tool that solves a genuine problem with clean, professional output.
 
 - 🔗 [LinkedIn](https://linkedin.com/in/kerubo-bosire-364523283)
 - 💻 [GitHub](https://github.com/kerubobosire254)
