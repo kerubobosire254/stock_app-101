@@ -860,3 +860,5 @@ with tab4:
                 f'<span class="metric-chip">Max over: <strong>${residuals.max():.2f}</strong></span>'
                 f'<span class="metric-chip">Max under: <strong>${residuals.min():.2f}</strong></span>',
                 unsafe_allow_html=True)
+
+python-3.11
