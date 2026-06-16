@@ -1,8 +1,14 @@
-# Netflix Stock Price Intelligence Terminal 📈
+# Stock Price Prediction Intelligence 📈
 
 > Built by [Kerubo Bosire](https://linkedin.com/in/kerubo-bosire-364523283) · [GitHub](https://github.com/kerubobosire254)
 
 ---
+***Live Demo*** https://stockapp-101.streamlit.app/
+
+### Snippet of the App
+
+<img width="1355" height="586" alt="image" src="https://github.com/user-attachments/assets/1fa04558-ac28-4baf-aa8d-f2322d9058ef" />
+
 
 ## The Problem — And Why It Matters
 
