@@ -1,174 +1,172 @@
-# 📈 Stock Price Intelligence Terminal
+# Netflix Stock Price Intelligence Terminal 📈
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=flat&logo=tensorflow&logoColor=white)](https://tensorflow.org)
-[![Plotly](https://img.shields.io/badge/Plotly-Interactive-3D4DB7?style=flat&logo=plotly&logoColor=white)](https://plotly.com)
+> Built by [Kerubo Bosire](https://linkedin.com/in/kerubo-bosire-364523283) · [GitHub](https://github.com/kerubobosire254)
 
 ---
 
-## The problem
+## The Problem — And Why It Matters
 
-Most stock prediction models lie with confidence.
+Imagine you have some savings. Maybe it's KES 50,000. Maybe more. You've heard that investing in stocks — companies like Netflix — can grow that money over time. But when you open a financial website, you're met with a wall of numbers, unfamiliar abbreviations, and charts that look like they were designed for someone who went to business school.
 
-They train an LSTM, plot predicted vs actual, report a low RMSE, and call it done. The output is a single price line — no uncertainty range, no probability of being wrong, no honest answer to the question every analyst actually asks: *how much should I trust this forecast?*
+**Most people give up at this point.** Not because they aren't smart — but because the tools weren't built for them.
 
-That's not how professionals reason about the future. It's also not how models should be deployed.
+The people who do understand those tools? They're typically sitting in trading firms with Bloomberg terminals that cost **$24,000 a year** to access. They have data scientists running models in the background. They make decisions based on patterns in data that the average person simply cannot see.
 
-## The solution
+That gap — between what professional investors know and what everyone else has access to — is real, and it's costly. When ordinary people invest without understanding what the data is telling them, they often buy high and sell low, panic at the wrong moment, or miss opportunities entirely.
 
-This app layers three complementary methods so each one compensates for what the others can't do alone:
-
-- **LSTM** — learns sequential patterns in price and volume history. Tells you *where the model thinks price is going* based on the last 60 trading days.
-- **Monte Carlo simulation** — runs up to 2,000 GBM paths forward. Tells you the *probability distribution* of outcomes: median target, bull/bear cases, and the likelihood of upside. Honest about uncertainty.
-- **Technical indicators** — Bollinger Bands, RSI, MACD, ATR. Tells you the *current market context* so you can interpret both forecasts against live signal.
-
-Together: a point estimate, a confidence range, and the market context to read both. Built end-to-end — data pipeline, model training, artifact serialisation, and a deployable Streamlit UI — for any publicly traded ticker.
-
-## What's built
-
-| Module | What it does |
-|---|---|
-| **LSTM Predictions** | Sequence model trained on 5 engineered features, evaluated with RMSE / MAE / MAPE / directional accuracy |
-| **Monte Carlo Forecast** | 100–2,000 GBM simulations, configurable horizon up to 90 days, with 50% and 90% confidence intervals |
-| **Technical Analysis** | Bollinger Bands, RSI (14), MACD (12/26/9), ATR, %B — all rendered as interactive Plotly charts |
-| **Price History** | Multi-panel chart with MA10/50/200, daily returns, and log volume; OHLC candlestick; returns distribution |
+**This app was built to close that gap.**
 
 ---
 
-## Demo
+## The Solution — What This App Does
 
-The app ships with a synthetic 6-year price history (2019–2024, 1,500+ trading days) designed with realistic market regimes — bull runs, drawdowns, and volatility clusters — so every feature is demonstrable without an internet connection or API key.
+The **Netflix Price Intelligence Terminal** is a data-driven dashboard that takes years of Netflix stock price data and turns it into clear, visual insights — the kind that used to be locked behind expensive professional software.
 
-To use live data, enter any ticker and fetch directly from Yahoo Finance.
+You don't need to know what "MACD" means. You don't need to understand neural networks. The app does the heavy lifting and shows you what the numbers are actually saying.
 
----
+Here's what it does, in plain language:
 
-## Architecture
+### 📈 Price History
+Shows you how Netflix's stock price has moved over time — not just a flat line, but layered with **moving averages** (think of these as smoothed-out trend lines that filter out the day-to-day noise). You can also see daily returns and trading volume. At a glance, you can tell when Netflix was on a tear and when it was struggling.
 
-```
-stock-intelligence/
-├── app.py                     # Streamlit application (all tabs, UI, charts)
-├── train_and_save.py          # LSTM training script → saves model artifacts
-├── netflix_lstm_model.keras   # Trained model (generated by training script)
-├── netflix_scaler.pkl         # MinMaxScaler fitted on training data
-├── netflix_model_meta.json    # RMSE, MAE, MAPE, loss curves, best epoch
-└── requirements.txt
-```
+### 📐 Technical Analysis
+This is where it gets interesting. The app calculates three widely-used signals that professional traders rely on:
 
-### Model pipeline
+- **Bollinger Bands** — A kind of price "envelope." When the price touches the top of the envelope, the stock may be overheated. When it touches the bottom, it may be undervalued. The app draws this for you automatically.
 
-```
-Raw OHLCV
-    │
-    ▼
-Feature Engineering
-(MA10, MA50, Return, Log Volume, BB, RSI, MACD, ATR)
-    │
-    ▼
-MinMaxScaler → TimeseriesGenerator (sequence_length = 60)
-    │
-    ▼
-LSTM → Dense (trained on 80% split, validated on 20%)
-    │
-    ▼
-Inverse transform → Evaluation (RMSE, MAE, MAPE, directional accuracy)
-    │
-    ▼
-Artifacts saved → loaded at runtime by Streamlit app
-```
+- **RSI (Relative Strength Index)** — A number between 0 and 100 that tells you whether a stock is being *overbought* (everyone is piling in and the price is inflated) or *oversold* (everyone is panicking and the price may be lower than it should be). The app flags this with a clear label: OVERBOUGHT, OVERSOLD, or NEUTRAL.
+
+- **MACD** — A signal used to spot momentum shifts — basically, is the stock picking up speed going up, or slowing down and about to turn? The app shows this as a chart with a clear colour-coded histogram.
+
+### 🔮 Monte Carlo Forecast
+This is the most powerful section. The app runs **600 simulated futures** for Netflix's stock price — each one a mathematically plausible path based on how the stock has behaved historically.
+
+Think of it like this: imagine you want to know if it will rain next week. A meteorologist doesn't just give you one answer — they run hundreds of models and say "there's a 70% chance of rain." This app does the same thing for Netflix stock.
+
+The result is a **fan chart** — a wide band showing the range of likely outcomes, with a median (middle) path highlighted. You can see:
+- The **bull case** — the optimistic scenario (top 5% of simulations)
+- The **bear case** — the pessimistic scenario (bottom 5%)
+- The **probability that the price goes up** from today
+
+### 🤖 LSTM Predictions *(requires model files)*
+This section uses a **Long Short-Term Memory neural network** — a type of deep learning model specifically designed to learn from sequences over time, making it well-suited for stock price patterns.
+
+The model was trained on historical Netflix data and tested on data it had never seen before. The dashboard shows you how closely its predictions matched reality, along with honest performance metrics so you can judge how much to trust it.
 
 ---
 
-## Technical Stack
+## How to Run It Yourself
 
-| Layer | Technology |
-|---|---|
-| **Modeling** | TensorFlow / Keras LSTM, scikit-learn MinMaxScaler |
-| **Forecasting** | NumPy — Geometric Brownian Motion Monte Carlo |
-| **Data** | yfinance, pandas, NumPy |
-| **UI** | Streamlit multi-tab layout, custom CSS design system |
-| **Charts** | Plotly (subplots, candlestick, histogram, scatter, confidence bands) |
-| **Indicators** | MA10/50/200, Bollinger Bands, RSI, MACD, ATR, %B — all computed from scratch |
+### What you need
+- Python 3.9 or newer installed on your computer
+- A terminal / command prompt
 
----
-
-## Quickstart
-
+### Step 1 — Install dependencies
 ```bash
-git clone https://github.com/kerubobosire254/stock-app-101.git
-cd stock-price-prediction
 pip install -r requirements.txt
+```
+
+### Step 2 — Launch the app
+```bash
 streamlit run app.py
 ```
 
-**To enable LSTM predictions**, run the training script first:
+Your browser will open automatically. If it doesn't, go to `http://localhost:8501`.
 
+### Step 3 — Choose your data
+When the app opens, look at the **left sidebar**. You have three options:
+
+| Option | What it means |
+|---|---|
+| 📊 Demo data | Loads instantly — synthetic but realistic Netflix data 2019–2024. Great for exploring. |
+| 📂 Upload CSV | Upload your own Netflix stock CSV (e.g. downloaded from Yahoo Finance) |
+| 🌐 Fetch live | Pulls real-time data directly (requires `yfinance` installed) |
+
+### Step 4 — For LSTM predictions *(optional)*
+If you want the AI prediction tab to work, you'll need to run the training script first:
 ```bash
 python train_and_save.py
 ```
+This generates three files: `netflix_lstm_model.keras`, `netflix_scaler.pkl`, and `netflix_model_meta.json`. Place them in the same folder as `app.py`.
 
-This generates `netflix_lstm_model.keras`, `netflix_scaler.pkl`, and `netflix_model_meta.json`. Place them alongside `app.py` and relaunch. Without these files the app runs in full-featured demo mode — all tabs except the LSTM tab are functional.
+---
 
-### Requirements
+## Project Structure
 
 ```
-streamlit>=1.28
-pandas>=2.0
-numpy
-plotly
-yfinance
-scikit-learn
-tensorflow>=2.12
+📁 your-project-folder/
+├── app.py                     ← Main application (this is what you run)
+├── train_and_save.py          ← Script to train the LSTM model
+├── netflix_lstm_model.keras   ← Trained model (generated by training script)
+├── netflix_scaler.pkl         ← Data scaler (generated by training script)
+├── netflix_model_meta.json    ← Model metrics (generated by training script)
+├── requirements.txt           ← Python packages needed
+└── README.md                  ← You are here
 ```
 
 ---
 
-## Features In Depth
+## Limitations — What This App Cannot Do
 
-### LSTM model
+Being honest about what a tool *can't* do is just as important as showing what it can. Here are the real limitations:
 
-- **Input features:** Close price, log volume, MA10, MA50, daily return
-- **Sequence length:** 60 trading days (lookback window)
-- **Train/test split:** 80/20, no shuffling (preserves temporal order)
-- **Evaluation:** RMSE, MAE, MAPE, directional accuracy (predicts correct direction of next move)
-- **Visualisation:** Actual vs predicted overlay with ±1 RMSE confidence band, training/validation loss curves, actual vs predicted scatter plot, residual analysis
+**1. It cannot predict the future with certainty.**
+No model can. The Monte Carlo simulation and LSTM predictions are based on historical patterns. If Netflix announces something completely unexpected tomorrow — a merger, a scandal, a pandemic — no model trained on the past will see it coming.
 
-### Monte Carlo simulation
+**2. The LSTM model uses only price data.**
+It does not read news. It does not know about interest rates, competitor moves, or what Netflix's quarterly earnings report says. A professional analyst would combine all of these. This model only sees numbers.
 
-- Calibrates μ and σ from historical log returns
-- Runs configurable simulations (100–2,000) over a configurable horizon (10–90 days)
-- Reports median target, bull case (95th percentile), bear case (5th percentile), probability of upside, and expected price range
-- Includes a GBM disclaimer — the app is transparent about model assumptions
+**3. The demo data is synthetic.**
+It was generated to look like real Netflix stock behaviour, but it is not real historical data. For real analysis, use the CSV upload or live fetch option.
 
-### Technical indicators
+**4. Stock markets are not fully predictable by design.**
+If a model could reliably predict prices, everyone would use it, prices would adjust instantly, and the prediction would stop working. This is a research and learning tool — not a trading bot.
 
-All indicators are computed directly from price data using pandas — no external TA library dependency:
-
-- **Bollinger Bands** — 20-period MA ± 2σ, with %B oscillator
-- **RSI** — 14-period, with overbought/oversold zones and current signal
-- **MACD** — EMA(12) − EMA(26), signal line EMA(9), histogram
-- **ATR** — 14-period volatility proxy
+**5. Past performance does not guarantee future results.**
+This applies to every financial model ever built. The RSI, MACD, and Bollinger Band signals are indicators, not certainties.
 
 ---
 
-## Design Decisions
+## What Could Make This Better — Future Improvements
 
-**Why build indicators from scratch?** Avoids TA-Lib dependency issues across environments; demonstrates understanding of the underlying mathematics rather than black-box library calls.
+If this project continued to grow, here's what would take it to the next level:
 
-**Why Geometric Brownian Motion for Monte Carlo?** GBM is the standard financial assumption (underlies Black-Scholes). The app is explicit about its limitations — regime changes and mean reversion are not modelled — which reflects real-world deployment thinking, not just model building.
+- **Fundamental data integration** — pulling in Netflix's actual revenue, subscriber numbers, and profit margins alongside price data. Price alone tells only half the story.
 
-**Why separate training script from app?** Clean separation of concerns: `train_and_save.py` is a training pipeline, `app.py` is an inference and visualisation layer. The app loads artifacts at runtime — the same pattern used in production ML serving.
+- **Sentiment analysis layer** — scanning financial news headlines and social media to detect public mood around Netflix. Markets are partly driven by emotion.
+
+- **Multi-stock comparison** — letting you compare Netflix against competitors like Disney+, Amazon Prime, and Apple TV+ on the same dashboard.
+
+- **Dockerised deployment** — packaging the entire app into a container so anyone can run it with one command, no Python setup required.
+
+- **MLflow model tracking** — logging every training run with its metrics so you can compare model versions and track improvement over time.
+
+- **Alert system** — notifying you when the RSI crosses into overbought/oversold territory or when the Monte Carlo simulation shifts significantly.
+
+- **Backtesting engine** — showing what would have happened if you had bought or sold based on the signals this app generates. Putting the strategy to the test against real historical outcomes.
 
 ---
 
-## Author
+## Tech Stack
 
-**Kerubo Bosire**
-
-[![GitHub](https://img.shields.io/badge/GitHub-kerubobosire254-181717?style=flat&logo=github)](https://github.com/kerubobosire254)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-kerubo--bosire-0A66C2?style=flat&logo=linkedin)](https://linkedin.com/in/kerubo-bosire-364523283)
+| Layer | Tools Used |
+|---|---|
+| Frontend / Dashboard | Streamlit, Plotly |
+| Data Processing | Pandas, NumPy |
+| Machine Learning | TensorFlow / Keras (LSTM) |
+| Statistical Modelling | NumPy (Monte Carlo / GBM) |
+| Technical Indicators | Custom NumPy/Pandas implementation |
+| Live Data | yfinance |
 
 ---
 
-> *This project is for educational and portfolio purposes. Nothing in this application constitutes financial advice.*
+## About the Builder
+
+This app was built by **Kerubo Bosire**, an actuarial scientist transitioning into data science and machine learning. The goal was to build something that demonstrates real-world ML engineering skills — not just a textbook example, but a tool that solves a genuine problem with clean, professional output.
+
+- 🔗 [LinkedIn](https://linkedin.com/in/kerubo-bosire-364523283)
+- 💻 [GitHub](https://github.com/kerubobosire254)
+
+---
+
+*This project is for educational and portfolio purposes. Nothing in this app constitutes financial advice.*
